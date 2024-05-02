@@ -6,20 +6,17 @@ edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [dependencies]
-defmt-rtt = "0.4.0"
-embassy-executor = "0.5.0"
-embassy-time = {version = "0.3.0", features = ["generic-queue-8"]}
 esp-backtrace = { version = "0.11.0", features = [
     "esp32s3",
     "exception-handler",
     "panic-handler",
     "println",
 ] }
-esp-hal = { version = "0.17.0", features = [ "esp32s3", 
-    "embassy", "embassy-time-timg0", "embassy-executor-thread"
-] }
+esp-hal = { version = "0.17.0", features = [ "esp32s3", "embassy", "embassy-time-timg0", "embassy-executor-thread"] }
 esp-println = { version = "0.9.0", features = ["esp32s3", "log"] }
 log = { version = "0.4.20" }
+embassy-executor = "0.5.0"
+embassy-time = {version = "0.3.0", features = ["generic-queue-8"]}
 [profile.dev]
 # Rust debug is too slow. 
 # For debug builds always builds with some optimization

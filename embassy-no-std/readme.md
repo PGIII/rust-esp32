@@ -3,4 +3,4 @@
 ## Basic project creation
 
 Project created using `cargo generate esp-rs/esp-template cargo`
-For more information go (here)[https://github.com/esp-rs/esp-template]
+For more information go [here](https://github.com/esp-rs/esp-template)

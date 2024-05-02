@@ -1,7 +1,6 @@
 #![no_std]
 #![no_main]
 
-use defmt_rtt as _;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
 use esp_backtrace as _;
