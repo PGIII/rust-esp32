@@ -30,9 +30,8 @@ use esp_hal::{
     FlashSafeDma,
 };
 use ssd1680::{
-    driver::Ssd1680,
-    graphics::Display,
-    graphics::{Display2in13, DisplayRotation},
+    async_driver::Ssd1680Async,
+    graphics::{Display, Display2in13, DisplayRotation},
 };
 
 #[main]
@@ -61,7 +60,7 @@ async fn main(_spawner: Spawner) {
     let dma_channel = dma.channel0;
 
     //TODO: are these buffers?
-    let (mut descriptors, mut rx_descriptors) = dma_descriptors!(3200);
+    let (mut descriptors, mut rx_descriptors) = dma_descriptors!(3200, 3200);
     let spi = Spi::new(spi, 50_000.kHz(), SpiMode::Mode0, &clocks)
         .with_pins(Some(sclk), Some(mosi), NO_PIN, NO_PIN)
         .with_dma(dma_channel.configure_for_async(
@@ -70,13 +69,17 @@ async fn main(_spawner: Spawner) {
             &mut rx_descriptors,
             DmaPriority::Priority0,
         ));
-    let spi = FlashSafeDma::<_, 6000>::new(spi);
+    //This allows accessing data on flash, eg. const and static variables
+    //TODO: what size is optimal for this?
+    let spi = FlashSafeDma::<_, 3200>::new(spi);
     let spi_device = ExclusiveDevice::new(spi, cs, Delay).unwrap();
     let disp_interface = display_interface_spi::SPIInterface::new(spi_device, dc);
-    let mut delay = Delay;
-    let mut ssd1680 = Ssd1680::new(disp_interface, busy, rst, &mut delay).unwrap();
-    ssd1680.clear_bw_frame().unwrap();
     let mut display_bw = Display2in13::bw();
+    let mut delay = Delay;
+    let mut ssd1680 = Ssd1680Async::new(disp_interface, busy, rst, &mut delay)
+        .await
+        .unwrap();
+    ssd1680.clear_bw_frame().await.unwrap();
     display_bw.set_rotation(DisplayRotation::Rotate90);
     // background fill
     display_bw
@@ -90,8 +93,8 @@ async fn main(_spawner: Spawner) {
     )
     .draw(&mut display_bw)
     .unwrap();
-    ssd1680.update_bw_frame(display_bw.buffer()).unwrap();
-    ssd1680.display_frame(&mut delay).unwrap();
+    ssd1680.update_bw_frame(display_bw.buffer()).await.unwrap();
+    ssd1680.display_frame(&mut delay).await.unwrap();
     let triangles = [
         Triangle::from_slice(&[Point::new(50, 50), Point::new(0, 100), Point::new(150, 100)]),
         Triangle::from_slice(&[Point::new(75, 75), Point::new(25, 75), Point::new(125, 125)]),
@@ -111,8 +114,8 @@ async fn main(_spawner: Spawner) {
             t.into_styled(PrimitiveStyle::with_stroke(BinaryColor::Off, 1))
                 .draw(&mut display_bw)
                 .unwrap();
-            ssd1680.update_bw_frame(display_bw.buffer()).unwrap();
-            ssd1680.display_frame(&mut delay).unwrap();
+            ssd1680.update_bw_frame(display_bw.buffer()).await.unwrap();
+            ssd1680.display_frame(&mut delay).await.unwrap();
             Timer::after_millis(1000).await;
         }
     }

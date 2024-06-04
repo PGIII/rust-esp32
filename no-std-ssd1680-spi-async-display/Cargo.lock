@@ -480,9 +480,9 @@ dependencies = [
 
 [[package]]
 name = "esp-metadata"
-version = "0.1.0"
+version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a97109e81e9fb68cbf838ffda09cebbc9b25fe12f8b8a5e1b32391561e7c153"
+checksum = "654b8f14bf076fe5995fe94fabbe41a98041e1f2f801e5b3404dcae87e476db6"
 dependencies = [
  "basic-toml",
  "lazy_static",
@@ -968,7 +968,7 @@ dependencies = [
 [[package]]
 name = "ssd1680"
 version = "0.2.0"
-source = "git+https://github.com/PGIII/ssd1680?branch=display-interface#a4c9d09bbda6ecf9c06110921303796ae1bf3c00"
+source = "git+https://github.com/PGIII/ssd1680?branch=display-interface#43009e5988c5b0a7b971bb749a032d646eadf147"
 dependencies = [
  "display-interface",
  "embedded-graphics",
