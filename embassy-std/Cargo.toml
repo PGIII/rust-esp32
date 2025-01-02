@@ -4,7 +4,11 @@ version = "0.1.0"
 authors = ["Preston Garrison III <preston.garrison3@gmail.com>"]
 edition = "2021"
 resolver = "2"
-rust-version = "1.71"
+rust-version = "1.77"
+
+[[bin]]
+name = "std"
+harness = false
 
 [profile.release]
 opt-level = "s"
@@ -25,9 +29,9 @@ embassy = ["esp-idf-svc/embassy-sync", "esp-idf-svc/critical-section", "esp-idf-
 
 [dependencies]
 log = { version = "0.4", default-features = false }
-esp-idf-svc = { version = "0.48", default-features = false }
+esp-idf-svc = { version = "0.50", features = ["critical-section", "embassy-time-driver", "embassy-sync"] }
 embassy-executor = "0.5.0"
 embassy-time = {version = "0.3.0", features = ["generic-queue-8"]}
 
 [build-dependencies]
-embuild = "0.31.3"
+embuild = "0.33"
